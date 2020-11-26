@@ -9,5 +9,3 @@ export default (req, res) => {
     .create({body: message, from: From, to: To})
     .then(r => res.json(r)); 
 }
-
-// 4165625168, 2899716192

@@ -198,9 +198,3 @@ export default function MyForm () {
     </Box>
   )
 }
-
-// curl -XGET "https://lookups.twilio.com/v1/PhoneNumbers/5108675309?CountryCode=US&Type=carrier" \
-//     -u '{ACcb9629e06ab653764912ab1d107a3a22}:{7f0fcdfbcceddae4ae206e6b87ead65b}'
-
-
-// test numbers  =>         4165625168,2899716193,4162703403
