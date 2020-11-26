@@ -1,202 +1,347 @@
-import { Form, Field } from 'react-final-form'
+import { Form, Field } from "react-final-form";
+import { useTimeoutFn, useAsyncFn } from "react-use";
+import { CloseIcon, CheckIcon } from "@chakra-ui/icons";
 import {
+  Heading,
   Box,
   Button,
-  Flex
-} from '@chakra-ui/react';
-import React from 'react';
+  VStack,
+  Flex,
+  FormControl,
+  FormLabel,
+  FormErrorMessage,
+  FormHelperText,
+  Input,
+  Textarea,
+  Select,
+  Spinner,
+  Stack,
+} from "@chakra-ui/react";
+import React from "react";
+import PhoneNumber from "awesome-phonenumber";
 
-const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
-
-const onSubmit = async (values, form) => {
-  // await sleep(300)
-  // window.alert(JSON.stringify(values, 0, 2));
-  // console.log(values);
-  // setTimeout(form.reset, 10);
-  // validateNumbers(values);
-}
-
-const findNumbers = (values, setShow) => {
-  const sid = values.sid;
-  const token = values.token;
-  const data = {
-    sid,
-    token
-  }
-  fetchNumbers(values)
-  .then(numbers => fillSelect(numbers, setShow));
-}
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const fetchNumbers = (values) => {
-  // http://localhost:3000/api/TwilNumbers/TwilioNumbers
-  return fetch('https://text-sender.vercel.app/api/TwilNumbers/TwilioNumbers', {
-    method: 'POST',
-    body: JSON.stringify(values)
-  })
-  .then(res => res.json())
-}
+  // return fetch("http://localhost:3000/api/TwilNumbers/TwilioNumbers", {
+  return fetch("https://text-sender.vercel.app/api/TwilNumbers/TwilioNumbers", {
+    method: "POST",
+    body: JSON.stringify(values),
+  }).then((res) => res.json());
+};
 
-const fillSelect = (numbers, setShow) => {
-  var select = document.getElementById("twil-dd"); 
-    var opt = 'Select Number'
-    var el = document.createElement("option");
-    el.textContent = opt;
-    el.value = opt;
-    select.appendChild(el);
-
-  for (let i = 0; i < numbers.length; i++) {
-    var opt = numbers[i];
-    var el = document.createElement("option");
-    el.textContent = opt;
-    el.value = opt;
-    select.appendChild(el);
+const validatePhoneNumbers = (value) => {
+  if (!value) {
+    return undefined;
   }
 
-  setShow(true);
-}
+  const invalidNumbers = [];
+  const numbers = value.split(",").map((number) => number.trim());
 
-const clearDrop = () => {
-  const node = document.getElementById("twil-dd");
-  node.innerHTML = ''
-}
+  numbers.forEach((number) => {
+    const pnCa = PhoneNumber(number, "CA");
+    const pnUs = PhoneNumber(number, "US");
 
-// const validateNumbers = (values) => {
-//   const accountSid = values.sid;
-//   const authToken = values.token;
-  
-//   let newArr = values.numbers.split(',');
-//   newArr.forEach(number => {
-//     const n = number.trim();
+    if (!pnCa.isValid() || !pnUs.isValid()) {
+      invalidNumbers.push(number);
+    }
+  });
 
-//     return fetch('http://localhost:3000/api/TwilNumbers/TwilioNumbers', {
-//       method: 'POST',
-//       body: JSON.stringify(values)
-//     })
-//     .then(res => res.json())
+  if (invalidNumbers.length) {
+    return invalidNumbers
+      .map((number) => `${number} is an invalid CA/US number.`)
+      .join("\n");
+  }
+
+  return undefined;
+};
+
+const validateRequired = (value) => {
+  if (!value) {
+    return "Required";
+  }
+
+  return undefined;
+};
+
+// const onSubmit = (values) => {
+//   const { sid, token, message } = values;
+//   const data = {
+//     sid,
+//     token,
+//     message,
+//     From: values.twilNumber,
+//   };
+
+//   let newArr = [];
+
+//   values.numbers.split(",").forEach((number) => {
+//     data["To"] = number.trim();
+//     newArr.push(data);
+//     // setInterval(() => {
+//     //   return fetch("http://localhost:3000/api/SendSMS/CreateSMS", {
+//     //     // return fetch('https://text-sender.vercel.app/api/SendSMS/CreateSMS', {
+//     //     method: "POST",
+//     //     body: JSON.stringify(data),
+//     //   }).then((res) => res.json());
+//     // }, 5000);
 //   });
-// }
+//   recursiveSendText(newArr);
+// };
 
-const createMessages = (values) => {
-  const {sid, token, message} = values;
-  const data = {
-    sid,
-    token,
-    message,
-    From: values.twilNumber,
+// With this, send up a memo and memoize errors
+const recursiveSendText = (numbers) => {
+  console.log(numbers);
+  if (numbers.length === 0) {
+    return;
   }
 
-  values.numbers.split(',').forEach(number => {
-    data["To"] = number.trim();
-    // http://localhost:3000/api/SendSMS/CreateSMS
-    return fetch('https://text-sender.vercel.app/api/SendSMS/CreateSMS', {
-      method: 'POST',
-      body: JSON.stringify(data)
-    })
-    .then(res => res.json())
-    
-  })
-}
+  // fetch("http://localhost:3000/api/SendSMS/CreateSMS", {
+  return fetch("https://text-sender.vercel.app/api/SendSMS/CreateSMS", {
+    method: "POST",
+    body: JSON.stringify(numbers.slice(numbers.length - 1)[0]),
+  }).then((res) => res.json());
+
+  setTimeout(() => {
+    return recursiveSendText(numbers.slice(0, numbers.length - 1));
+  }, 5000);
+};
 
 // Function to create the bottom of the page (after clicking find numbers)
-const renderBottom = (submitting, pristine, form, values, setShow) => {
+const BottomSection = ({
+  submitting,
+  pristine,
+  form,
+  values,
+  setShow,
+  numbers,
+  invalid,
+}) => {
   return (
     <Box>
-      <Field name="message">
+      <Field
+        name="from"
+        validate={validateRequired}
+        render={({ input, meta }) => (
+          <FormControl isInvalid={meta.touched && meta.error}>
+            <FormLabel htmlFor="from">Twilio phone number</FormLabel>
+            <Select {...input} id="from" placeholder="Phone Number">
+              <option value={undefined} />
+              {numbers.map((number) => (
+                <option key={number} value={number}>
+                  {number}
+                </option>
+              ))}
+            </Select>
+            {meta.touched && meta.error && (
+              <FormErrorMessage>{meta.error}</FormErrorMessage>
+            )}
+          </FormControl>
+        )}
+      />
+
+      <Field name="message" validate={validateRequired}>
         {({ input, meta }) => (
-          <Box w='89%' m='10px 20px'>
-            <label>Message (include links)</label>
-            <textarea {...input} placeholder="Message" style={{minHeight: '22px', width: '100%', resize: 'vertical', marginTop:'6px'}}/>
-            {meta.touched && meta.error && <span>{meta.error}</span>}
-          </Box>
+          <FormControl isInvalid={meta.touched && meta.error}>
+            <FormLabel htmlFor="message">Message</FormLabel>
+            <Textarea {...input} id="message" placeholder="Type here..." />
+            {meta.touched && meta.error && (
+              <FormErrorMessage>{meta.error}</FormErrorMessage>
+            )}
+          </FormControl>
         )}
       </Field>
 
       <Field
         name="numbers"
+        validate={(value) =>
+          validateRequired(value) || validatePhoneNumbers(value)
+        }
         render={({ input, meta }) => (
-          <Box w='89%' m='10px 20px'>
-            <label>List of phone numbers</label>
-            <textarea {...input} placeholder='Phone numbers' style={{minHeight: '22px',width: '100%', resize: 'vertical', marginTop:'6px'}}/>
-            {meta.touched && meta.error && <span>{meta.error}</span>}
-          </Box>
+          <FormControl isInvalid={meta.touched && meta.error}>
+            <FormLabel htmlFor="phoneNumbers">Phone numbers</FormLabel>
+            <Textarea
+              {...input}
+              id="phoneNumbers"
+              placeholder="Phone numbers"
+            />
+            {meta.touched && meta.error && (
+              <FormErrorMessage>{meta.error}</FormErrorMessage>
+            )}
+          </FormControl>
         )}
       />
 
-      <Flex justifyContent='space-around'>
-        <Button type="submit"
-          disabled={submitting || pristine}
-          onClick={() => {
-            createMessages(values)
-          }}
+      <Stack direction="row" mt="24px">
+        <Button
+          type="submit"
+          disabled={submitting || pristine || invalid}
+          colorScheme="teal"
         >
           Submit
         </Button>
-        <Button type="reset"
+
+        <Button
+          type="reset"
           onClick={() => {
             setShow(false);
-            form.reset()
-            clearDrop()
+            form.reset();
           }}
           disabled={submitting || pristine}
         >
           Reset form
         </Button>
-      </Flex>
-      <pre>{JSON.stringify(values, 0, 2)}</pre>
+      </Stack>
     </Box>
-  )
-}
+  );
+};
 
-export default function MyForm () {
-  const [show, setShow] = React.useState(false);
+const NumberSendRow = ({ data }) => {
+  const [state, fetchRequest] = useAsyncFn(() => {
+    // return fetch("http://localhost:3000/api/SendSMS/CreateSMS", {
+    return fetch("https://text-sender.vercel.app/api/SendSMS/CreateSMS", {
+      method: "POST",
+      body: JSON.stringify(data),
+    }).then((res) => res.json());
+  }, [data]);
+  const callFn = () => {
+    if (!state.loading) {
+      return fetchRequest();
+    }
+  };
+  const [isReady, cancel, reset] = useTimeoutFn(callFn, data.timeToSend);
 
   return (
-    <Box 
-      border='1px solid black'
-      borderRadius='2px'
-      m='auto'
-      w='26%'
-    >
+    <Box p={5} shadow="md" borderWidth="1px">
+      {(!isReady() || state.loading) && <Spinner />}{" "}
+      {!(!isReady() || state.loading) && state?.value?.error_code ? (
+        <CloseIcon />
+      ) : (
+        <CheckIcon />
+      )}{" "}
+      {data.to}
+    </Box>
+  );
+};
+
+export default function MyForm() {
+  const [show, setShow] = React.useState(false);
+  const [numbers, setNumbers] = React.useState([]);
+  const [formData, setFormData] = React.useState([]);
+
+  const findNumbers = (values) => {
+    const sid = values.sid;
+    const token = values.token;
+    const data = {
+      sid,
+      token,
+    };
+
+    fetchNumbers(values).then((numbersFromTwillio) => {
+      setNumbers(numbersFromTwillio);
+      setShow(true);
+    });
+  };
+
+  const onSubmit = (values) => {
+    const { sid, token, message, from } = values;
+    const data = {
+      sid,
+      token,
+      message,
+      from,
+    };
+
+    const newArr = values.numbers.split(",").map((number, index) => ({
+      ...data,
+      to: number.trim(),
+      timeToSend: Math.random() * (1000 * (index + 1)),
+    }));
+
+    setFormData(newArr);
+  };
+
+  return (
+    <Box p={5} shadow="md" borderWidth="1px" m="auto" w="26%">
       <Form
         onSubmit={onSubmit}
         // validate={validate}
-        render={({ handleSubmit, form, submitting, pristine, values }) => (
-          <form onSubmit={handleSubmit} style={{margin: '20px auto'}}>
-            <Box m='3%'>
-              <h2>Send your text</h2>
+        render={({
+          handleSubmit,
+          form,
+          submitting,
+          pristine,
+          values,
+          invalid,
+        }) => (
+          <form onSubmit={handleSubmit} style={{ margin: "20px auto" }}>
+            <Box mb="24px">
+              <Heading>Send your text</Heading>
               <p>Please add your credentials for twilio below</p>
             </Box>
-            
-            <Box w='90%' m='0 3%'>
-              <Flex>
-                <Box mb='15px' w='40%'>
-                  <Box mt='5px' mb='20px'><label>Twilio Account SID</label></Box>
-                  <Box mb='20px'><label>Twilio Auth Token</label></Box>
-                  <Box><label>Twilio Phone number</label></Box>
-                </Box> 
-                <Box mb='15px' w='60%'>
-                  <Box mb='15px'><Field name="sid" component="input" placeholder="Account SID" style={{width: '100%', height: '25px'}}/></Box>
-                  <Box mb='15px'><Field name="token" component="input" placeholder="Auth Token" style={{width: '100%', height: '25px'}}/></Box>
-                  <Box><Field id='twil-dd' name="twilNumber" component="select" placeholder="Phone Number" style={{width: '100%', height: '25px'}}/></Box>
-                </Box>
-              </Flex>
-            </Box>
 
-            <Flex justifyContent='center'>
-              <Button type="submit"
-                m='0 28%'
+            <Field
+              name="sid"
+              validate={validateRequired}
+              render={({ input, meta }) => (
+                <FormControl isInvalid={meta.touched && meta.error}>
+                  <FormLabel htmlFor="sid">Account SID</FormLabel>
+                  <Input {...input} id="sid" placeholder="Account SID" />
+                  {meta.touched && meta.error && (
+                    <FormErrorMessage>{meta.error}</FormErrorMessage>
+                  )}
+                </FormControl>
+              )}
+            />
+
+            <Field
+              name="token"
+              validate={validateRequired}
+              render={({ input, meta }) => (
+                <FormControl isInvalid={meta.touched && meta.error}>
+                  <FormLabel htmlFor="token">Token</FormLabel>
+                  <Input {...input} id="token" placeholder="Account Token" />
+                  {meta.touched && meta.error && (
+                    <FormErrorMessage>{meta.error}</FormErrorMessage>
+                  )}
+                </FormControl>
+              )}
+            />
+
+            <Box mt={"24px"}>
+              <Button
+                type="button"
+                m="0 28%"
                 disabled={submitting || pristine}
-                onClick={()=> {findNumbers(values, setShow)}}
+                onClick={() => {
+                  findNumbers(values);
+                }}
               >
                 Find number(s)
               </Button>
-            </Flex>
+            </Box>
 
-            {show ? renderBottom(submitting, pristine, form, values, setShow) : ''}
-
+            {show && (
+              <Box mt="24px">
+                <BottomSection
+                  submitting={submitting}
+                  pristine={pristine}
+                  form={form}
+                  values={values}
+                  invalid={invalid}
+                  numbers={numbers}
+                  setShow={setShow}
+                />
+              </Box>
+            )}
           </form>
         )}
       />
+      <VStack spacing={4} align="stretch">
+        {formData.map((data) => (
+          <NumberSendRow key={data.to} data={data} />
+        ))}
+      </VStack>
     </Box>
-  )
+  );
 }
