@@ -28,7 +28,8 @@ const findNumbers = (values, setShow) => {
 }
 
 const fetchNumbers = (values) => {
-  return fetch('http://localhost:3000/api/TwilNumbers/TwilioNumbers', {
+  // http://localhost:3000/api/TwilNumbers/TwilioNumbers
+  return fetch('https://text-sender.vercel.app/TwilNumbers/TwilioNumbers', {
     method: 'POST',
     body: JSON.stringify(values)
   })
@@ -86,8 +87,8 @@ const createMessages = (values) => {
 
   values.numbers.split(',').forEach(number => {
     data["To"] = number.trim();
-
-    return fetch('http://localhost:3000/api/SendSMS/CreateSMS', {
+    // http://localhost:3000/api/SendSMS/CreateSMS
+    return fetch('https://text-sender.vercel.app/SendSMS/CreateSMS', {
       method: 'POST',
       body: JSON.stringify(data)
     })
