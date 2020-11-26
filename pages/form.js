@@ -37,12 +37,6 @@ const fetchNumbers = (values) => {
 
 const fillSelect = (numbers, setShow) => {
   var select = document.getElementById("twil-dd"); 
-    var opt = 'Select Number'
-    var el = document.createElement("option");
-    el.textContent = opt;
-    el.value = opt;
-    select.appendChild(el);
-
   for (let i = 0; i < numbers.length; i++) {
     var opt = numbers[i];
     var el = document.createElement("option");
@@ -59,43 +53,6 @@ const clearDrop = () => {
   node.innerHTML = ''
 }
 
-// const validateNumbers = (values) => {
-//   const accountSid = values.sid;
-//   const authToken = values.token;
-  
-//   let newArr = values.numbers.split(',');
-//   newArr.forEach(number => {
-//     const n = number.trim();
-
-//     return fetch('http://localhost:3000/api/TwilNumbers/TwilioNumbers', {
-//       method: 'POST',
-//       body: JSON.stringify(values)
-//     })
-//     .then(res => res.json())
-//   });
-// }
-
-const createMessages = (values) => {
-  const {sid, token, message} = values;
-  const data = {
-    sid,
-    token,
-    message,
-    From: values.twilNumber,
-  }
-
-  values.numbers.split(',').forEach(number => {
-    data["To"] = number.trim();
-
-    return fetch('http://localhost:3000/api/SendSMS/CreateSMS', {
-      method: 'POST',
-      body: JSON.stringify(data)
-    })
-    .then(res => res.json())
-  })
-}
-
-// Function to create the bottom of the page (after clicking find numbers)
 const renderBottom = (submitting, pristine, form, values, setShow) => {
   return (
     <Box>
@@ -145,6 +102,30 @@ const renderBottom = (submitting, pristine, form, values, setShow) => {
   )
 }
 
+const validateNumbers = (values) => {
+  const accountSid = values.sid;
+  const authToken = values.token;
+  
+  let newArr = values.numbers.split(',');
+  newArr.forEach(number => {
+    const n = number.trim();
+
+    return fetch('http://localhost:3000/api/TwilNumbers/TwilioNumbers', {
+      method: 'POST',
+      body: JSON.stringify(values)
+    })
+    .then(res => res.json())
+  });
+}
+
+const createMessages = (values) => {
+  return fetch('http://localhost:3000/api/SendSMS/CreateSMS', {
+    method: 'POST',
+    body: JSON.stringify(values)
+  })
+  .then(res => res.json())
+}
+
 export default function MyForm () {
   const [show, setShow] = React.useState(false);
 
@@ -175,7 +156,7 @@ export default function MyForm () {
                 <Box mb='15px' w='60%'>
                   <Box mb='15px'><Field name="sid" component="input" placeholder="Account SID" style={{width: '100%', height: '25px'}}/></Box>
                   <Box mb='15px'><Field name="token" component="input" placeholder="Auth Token" style={{width: '100%', height: '25px'}}/></Box>
-                  <Box><Field id='twil-dd' name="twilNumber" component="select" placeholder="Phone Number" style={{width: '100%', height: '25px'}}/></Box>
+                  <Box><Field id='twil-dd' name="twil-number" component="select" placeholder="Phone Number" style={{width: '100%', height: '25px'}}/></Box>
                 </Box>
               </Flex>
             </Box>
@@ -190,6 +171,7 @@ export default function MyForm () {
               </Button>
             </Flex>
 
+            {console.log(show)}
             {show ? renderBottom(submitting, pristine, form, values, setShow) : ''}
 
           </form>
