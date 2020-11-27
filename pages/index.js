@@ -213,7 +213,14 @@ export default function MyForm() {
 
   return (
     <Box h="100%" w="100%" m="auto">
-      <Box bg="white" p={5} shadow="md" borderWidth="1px" m="2% auto" w="26%">
+      <Box
+        bg="white"
+        p={5}
+        shadow="md"
+        borderWidth="1px"
+        m="2% auto"
+        w={["100%", "26%"]}
+      >
         <Form
           onSubmit={onSubmit}
           // validate={validate}
