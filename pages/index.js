@@ -20,8 +20,6 @@ import {
 import React from "react";
 import PhoneNumber from "awesome-phonenumber";
 
-const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
 const fetchNumbers = (values) => {
   // return fetch("http://localhost:3000/api/TwilNumbers/TwilioNumbers", {
   return fetch("https://text-sender.vercel.app/api/TwilNumbers/TwilioNumbers", {
@@ -62,49 +60,6 @@ const validateRequired = (value) => {
   }
 
   return undefined;
-};
-
-// const onSubmit = (values) => {
-//   const { sid, token, message } = values;
-//   const data = {
-//     sid,
-//     token,
-//     message,
-//     From: values.twilNumber,
-//   };
-
-//   let newArr = [];
-
-//   values.numbers.split(",").forEach((number) => {
-//     data["To"] = number.trim();
-//     newArr.push(data);
-//     // setInterval(() => {
-//     //   return fetch("http://localhost:3000/api/SendSMS/CreateSMS", {
-//     //     // return fetch('https://text-sender.vercel.app/api/SendSMS/CreateSMS', {
-//     //     method: "POST",
-//     //     body: JSON.stringify(data),
-//     //   }).then((res) => res.json());
-//     // }, 5000);
-//   });
-//   recursiveSendText(newArr);
-// };
-
-// With this, send up a memo and memoize errors
-const recursiveSendText = (numbers) => {
-  console.log(numbers);
-  if (numbers.length === 0) {
-    return;
-  }
-
-  // fetch("http://localhost:3000/api/SendSMS/CreateSMS", {
-  return fetch("https://text-sender.vercel.app/api/SendSMS/CreateSMS", {
-    method: "POST",
-    body: JSON.stringify(numbers.slice(numbers.length - 1)[0]),
-  }).then((res) => res.json());
-
-  setTimeout(() => {
-    return recursiveSendText(numbers.slice(0, numbers.length - 1));
-  }, 5000);
 };
 
 // Function to create the bottom of the page (after clicking find numbers)
@@ -230,13 +185,6 @@ export default function MyForm() {
   const [formData, setFormData] = React.useState([]);
 
   const findNumbers = (values) => {
-    const sid = values.sid;
-    const token = values.token;
-    const data = {
-      sid,
-      token,
-    };
-
     fetchNumbers(values).then((numbersFromTwillio) => {
       setNumbers(numbersFromTwillio);
       setShow(true);
@@ -262,86 +210,101 @@ export default function MyForm() {
   };
 
   return (
-    <Box p={5} shadow="md" borderWidth="1px" m="auto" w="26%">
-      <Form
-        onSubmit={onSubmit}
-        // validate={validate}
-        render={({
-          handleSubmit,
-          form,
-          submitting,
-          pristine,
-          values,
-          invalid,
-        }) => (
-          <form onSubmit={handleSubmit} style={{ margin: "20px auto" }}>
-            <Box mb="24px">
-              <Heading>Send your text</Heading>
-              <p>Please add your credentials for twilio below</p>
-            </Box>
-
-            <Field
-              name="sid"
-              validate={validateRequired}
-              render={({ input, meta }) => (
-                <FormControl isInvalid={meta.touched && meta.error}>
-                  <FormLabel htmlFor="sid">Account SID</FormLabel>
-                  <Input {...input} id="sid" placeholder="Account SID" />
-                  {meta.touched && meta.error && (
-                    <FormErrorMessage>{meta.error}</FormErrorMessage>
-                  )}
-                </FormControl>
-              )}
-            />
-
-            <Field
-              name="token"
-              validate={validateRequired}
-              render={({ input, meta }) => (
-                <FormControl isInvalid={meta.touched && meta.error}>
-                  <FormLabel htmlFor="token">Token</FormLabel>
-                  <Input {...input} id="token" placeholder="Account Token" />
-                  {meta.touched && meta.error && (
-                    <FormErrorMessage>{meta.error}</FormErrorMessage>
-                  )}
-                </FormControl>
-              )}
-            />
-
-            <Box mt={"24px"}>
-              <Button
-                type="button"
-                m="0 28%"
-                disabled={submitting || pristine}
-                onClick={() => {
-                  findNumbers(values);
-                }}
-              >
-                Find number(s)
-              </Button>
-            </Box>
-
-            {show && (
-              <Box mt="24px">
-                <BottomSection
-                  submitting={submitting}
-                  pristine={pristine}
-                  form={form}
-                  values={values}
-                  invalid={invalid}
-                  numbers={numbers}
-                  setShow={setShow}
-                />
+    <Box h="100%" w="100%" m="auto">
+      <Box bg="white" p={5} shadow="md" borderWidth="1px" m="2% auto" w="26%">
+        <Form
+          onSubmit={onSubmit}
+          // validate={validate}
+          render={({
+            handleSubmit,
+            form,
+            submitting,
+            pristine,
+            values,
+            invalid,
+          }) => (
+            <form onSubmit={handleSubmit} style={{ margin: "20px auto" }}>
+              <Box mb="24px">
+                <Heading>Send your text</Heading>
+                <p>Please add your credentials for twilio below</p>
               </Box>
-            )}
-          </form>
-        )}
-      />
-      <VStack spacing={4} align="stretch">
-        {formData.map((data) => (
-          <NumberSendRow key={data.to} data={data} />
-        ))}
-      </VStack>
+              <Field
+                name="accountSid"
+                validate={validateRequired}
+                render={({ input, meta }) => (
+                  <FormControl isInvalid={meta.touched && meta.error}>
+                    <FormLabel htmlFor="sid">Account SID</FormLabel>
+                    <Input {...input} id="sid" placeholder="Account SID" />
+                    {meta.touched && meta.error && (
+                      <FormErrorMessage>{meta.error}</FormErrorMessage>
+                    )}
+                  </FormControl>
+                )}
+              />
+              <Field
+                name="apiKey"
+                validate={validateRequired}
+                render={({ input, meta }) => (
+                  <FormControl isInvalid={meta.touched && meta.error}>
+                    <FormLabel htmlFor="api-key">API Key</FormLabel>
+                    <Input {...input} id="api-key" placeholder="API Key" />
+                    {meta.touched && meta.error && (
+                      <FormErrorMessage>{meta.error}</FormErrorMessage>
+                    )}
+                  </FormControl>
+                )}
+              />{" "}
+              <Field
+                name="apiSecret"
+                validate={validateRequired}
+                render={({ input, meta }) => (
+                  <FormControl isInvalid={meta.touched && meta.error}>
+                    <FormLabel htmlFor="api-secret">API Key Secret</FormLabel>
+                    <Input
+                      {...input}
+                      id="api-secret"
+                      placeholder="API Key Secret"
+                    />
+                    {meta.touched && meta.error && (
+                      <FormErrorMessage>{meta.error}</FormErrorMessage>
+                    )}
+                  </FormControl>
+                )}
+              />{" "}
+              <Box mt={"24px"}>
+                <Button
+                  type="button"
+                  m="0 28%"
+                  disabled={submitting || pristine}
+                  onClick={() => {
+                    findNumbers(values);
+                  }}
+                >
+                  Find number(s)
+                </Button>
+              </Box>
+              {show && (
+                <Box mt="24px">
+                  <BottomSection
+                    submitting={submitting}
+                    pristine={pristine}
+                    form={form}
+                    values={values}
+                    invalid={invalid}
+                    numbers={numbers}
+                    setShow={setShow}
+                  />
+                </Box>
+              )}
+            </form>
+          )}
+        />
+        <VStack spacing={4} align="stretch">
+          {formData.map((data) => (
+            <NumberSendRow key={data.to} data={data} />
+          ))}
+        </VStack>
+      </Box>
     </Box>
   );
 }
