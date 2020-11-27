@@ -98,7 +98,9 @@ const BottomSection = ({
       <Field name="message" validate={validateRequired}>
         {({ input, meta }) => (
           <FormControl isInvalid={meta.touched && meta.error}>
-            <FormLabel htmlFor="message">Message</FormLabel>
+            <FormLabel mt="10px" htmlFor="message">
+              Message
+            </FormLabel>
             <Textarea {...input} id="message" placeholder="Type here..." />
             {meta.touched && meta.error && (
               <FormErrorMessage>{meta.error}</FormErrorMessage>
@@ -245,7 +247,7 @@ export default function MyForm() {
                 name="apiKey"
                 validate={validateRequired}
                 render={({ input, meta }) => (
-                  <FormControl isInvalid={meta.touched && meta.error}>
+                  <FormControl mt="10px" isInvalid={meta.touched && meta.error}>
                     <FormLabel htmlFor="api-key">API Key</FormLabel>
                     <Input {...input} id="api-key" placeholder="API Key" />
                     {meta.touched && meta.error && (
@@ -258,7 +260,7 @@ export default function MyForm() {
                 name="apiSecret"
                 validate={validateRequired}
                 render={({ input, meta }) => (
-                  <FormControl isInvalid={meta.touched && meta.error}>
+                  <FormControl mt="10px" isInvalid={meta.touched && meta.error}>
                     <FormLabel htmlFor="api-secret">API Key Secret</FormLabel>
                     <Input
                       {...input}
