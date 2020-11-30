@@ -21,8 +21,8 @@ import React from "react";
 import PhoneNumber from "awesome-phonenumber";
 
 const fetchNumbers = (values) => {
-  return fetch("http://localhost:3000/api/TwilNumbers/TwilioNumbers", {
-    // return fetch("https://text-sender.vercel.app/api/TwilNumbers/TwilioNumbers", {
+  // return fetch("http://localhost:3000/api/TwilNumbers/TwilioNumbers", {
+  return fetch("https://text-sender.vercel.app/api/TwilNumbers/TwilioNumbers", {
     method: "POST",
     body: JSON.stringify(values),
   }).then((res) => res.json());
@@ -155,8 +155,8 @@ const BottomSection = ({
 
 const NumberSendRow = ({ data }) => {
   const [state, fetchRequest] = useAsyncFn(() => {
-    return fetch("http://localhost:3000/api/SendSMS/CreateSMS", {
-      // return fetch("https://text-sender.vercel.app/api/SendSMS/CreateSMS", {
+    // return fetch("http://localhost:3000/api/SendSMS/CreateSMS", {
+    return fetch("https://text-sender.vercel.app/api/SendSMS/CreateSMS", {
       method: "POST",
       body: JSON.stringify(data),
     }).then((res) => res.json());
