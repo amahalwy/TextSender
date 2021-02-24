@@ -1,5 +1,4 @@
 import Document, { Head, Html, Main, NextScript } from "next/document";
-import { GA_TRACKING_ID } from "../utils/gtag";
 
 class MyDocument extends Document {
   static async getInitialProps(ctx) {
@@ -10,35 +9,28 @@ class MyDocument extends Document {
   render() {
     return (
       <Html>
-        {/* <Head> */}
-        {/* <script
-            async
-            src={`https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`}
-          />
-          <script
-            dangerouslySetInnerHTML={{
-              __html: `
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', '${GA_TRACKING_ID}', {
-                page_path: window.location.pathname,
-              });
-          `,
-            }}
-          /> */}
-        {/* </Head> */}
-        <Head />
+        {process.env.NODE_ENV === "production" && process.browser ? (
+          <Head>
+            <script
+              async
+              src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}
+            ></script>
+            <script
+              async
+              dangerouslySetInnerHTML={{
+                __html: `window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag("js", new Date());
+
+                gtag("config", "${process.env.NEXT_PUBLIC_GA_ID}");`,
+              }}
+            />
+          </Head>
+        ) : (
+          <Head />
+        )}
 
         <body>
-          {/* <noscript>
-            <iframe
-              src="https://www.googletagmanager.com/ns.html?id=GTM-5HMZ5R8"
-              height="0"
-              width="0"
-              style={{ display: "none", visibility: "hidden" }}
-            ></iframe>
-          </noscript> */}
           <Main />
           <NextScript />
         </body>
