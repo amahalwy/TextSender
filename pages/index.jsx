@@ -1,58 +1,21 @@
-import { Form, Field } from "react-final-form";
-import { useTimeoutFn, useAsyncFn } from "react-use";
-import { CloseIcon, CheckIcon } from "@chakra-ui/icons";
-import {
-  Heading,
-  Box,
-  Button,
-  VStack,
-  Flex,
-  FormControl,
-  FormLabel,
-  FormErrorMessage,
-  FormHelperText,
-  Input,
-  Textarea,
-  Select,
-  Spinner,
-  Stack,
-} from "@chakra-ui/react";
 import React from "react";
-import PhoneNumber from "awesome-phonenumber";
+import { Form } from "react-final-form";
+import { Heading, Box, VStack, Text } from "@chakra-ui/react";
 import NumberSendRow from "../components/NumberSendRow";
-import { publishMessage } from "./api/slack/SendSlackMsg";
+import BottomSection from "../components/BottomSection";
+import FormSection from "../components/FormSection";
 
-const fetchNumbers = (values) => {
-  // return fetch("http://localhost:3000/api/TwilNumbers/TwilioNumbers", {
-  return fetch("https://text-sender.vercel.app/api/TwilNumbers/TwilioNumbers", {
-    method: "POST",
-    body: JSON.stringify(values),
-  }).then((res) => res.json());
-};
-
-const validateRequired = (value) => {
-  if (!value) {
-    return "Required";
-  }
-
-  return undefined;
-};
-
-export default function MyForm() {
-  const [show, setShow] = React.useState(false);
+const MyForm = () => {
+  const [showBottom, setShowBottom] = React.useState(false);
   const [numbers, setNumbers] = React.useState([]);
   const [formData, setFormData] = React.useState([]);
-
-  const findNumbers = (values) => {
-    fetchNumbers(values).then((numbersFromTwillio) => {
-      setNumbers(numbersFromTwillio);
-      setShow(true);
-    });
-  };
+  const [successfulTexts, setSuccessfulTexts] = React.useState(0);
+  const [failedTexts, setFailedTexts] = React.useState(0);
+  const [loadingNumbers, setLoadingNumbers] = React.useState(false);
+  const [showTwilioSection, setShowTwilioSection] = React.useState(true);
 
   const onSubmit = (values) => {
     const { accountSid, apiKey, apiSecret, message, from } = values;
-    console.log(values);
     const data = {
       accountSid,
       apiKey,
@@ -95,71 +58,21 @@ export default function MyForm() {
                 <Heading>Send your text</Heading>
                 <p>Please add your credentials for twilio below</p>
               </Box>
-              <Field
-                name="accountSid"
-                validate={validateRequired}
-                render={({ input, meta }) => (
-                  <FormControl isInvalid={meta.touched && meta.error}>
-                    <FormLabel htmlFor="sid">Account SID</FormLabel>
-                    <Input {...input} id="sid" placeholder="Account SID" />
-                    {meta.touched && meta.error && (
-                      <FormErrorMessage>{meta.error}</FormErrorMessage>
-                    )}
-                  </FormControl>
-                )}
-              />
-              <Field
-                name="apiKey"
-                validate={validateRequired}
-                render={({ input, meta }) => (
-                  <FormControl mt="10px" isInvalid={meta.touched && meta.error}>
-                    <FormLabel htmlFor="api-key">API Key</FormLabel>
-                    <Input {...input} id="api-key" placeholder="API Key" />
-                    {meta.touched && meta.error && (
-                      <FormErrorMessage>{meta.error}</FormErrorMessage>
-                    )}
-                  </FormControl>
-                )}
-              />{" "}
-              <Field
-                name="apiSecret"
-                validate={validateRequired}
-                render={({ input, meta }) => (
-                  <FormControl mt="10px" isInvalid={meta.touched && meta.error}>
-                    <FormLabel htmlFor="api-secret">API Key Secret</FormLabel>
-                    <Input
-                      {...input}
-                      id="api-secret"
-                      placeholder="API Key Secret"
-                    />
-                    {meta.touched && meta.error && (
-                      <FormErrorMessage>{meta.error}</FormErrorMessage>
-                    )}
-                  </FormControl>
-                )}
-              />{" "}
-              <Box mt={"24px"}>
-                <Button
-                  type="button"
-                  m="0 28%"
-                  disabled={submitting || pristine}
-                  onClick={() => {
-                    findNumbers(values);
-                  }}
-                >
-                  Find number(s)
-                </Button>
-              </Box>
-              <Box>
-                <Button
-                  onClick={() => {
-                    publishMessage("Hello!!");
-                  }}
-                >
-                  Slack Find Convo
-                </Button>
-              </Box>
-              {show && (
+              {showTwilioSection ? (
+                <FormSection
+                  values={values}
+                  submitting={submitting}
+                  pristine={pristine}
+                  invalid={invalid}
+                  loadingNumbers={loadingNumbers}
+                  setNumbers={setNumbers}
+                  setShowBottom={setShowBottom}
+                  setLoadingNumbers={setLoadingNumbers}
+                  setShowTwilioSection={setShowTwilioSection}
+                />
+              ) : null}
+
+              {showBottom && (
                 <Box mt="24px">
                   <BottomSection
                     submitting={submitting}
@@ -168,19 +81,46 @@ export default function MyForm() {
                     values={values}
                     invalid={invalid}
                     numbers={numbers}
-                    setShow={setShow}
+                    setShowBottom={setShowBottom}
+                    setShowTwilioSection={setShowTwilioSection}
                   />
                 </Box>
               )}
             </form>
           )}
         />
+        {formData.length > 0 ? (
+          <Box d="flex" justifyContent="space-between" mb="6px">
+            <Box>
+              <Text fontStyle="italic" d="inline" color="rgb(0,200,0)">
+                Successful: {""}
+              </Text>
+              <Text d="inline">{successfulTexts}</Text>
+            </Box>
+            <Box>
+              <Text fontStyle="italic" d="inline" color="rgb(200,0,0)">
+                Failed: {""}
+              </Text>
+              <Text d="inline">{failedTexts}</Text>
+            </Box>
+          </Box>
+        ) : null}
+
         <VStack spacing={4} align="stretch">
-          {formData.map((data) => (
-            <NumberSendRow key={data.to} data={data} />
+          {formData.map((data, i) => (
+            <NumberSendRow
+              key={i}
+              data={data}
+              failedTexts={failedTexts}
+              successfulTexts={successfulTexts}
+              setFailedTexts={setFailedTexts}
+              setSuccessfulTexts={setSuccessfulTexts}
+            />
           ))}
         </VStack>
       </Box>
     </Box>
   );
-}
+};
+
+export default MyForm;

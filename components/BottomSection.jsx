@@ -2,61 +2,38 @@ import { Form, Field } from "react-final-form";
 import { useTimeoutFn, useAsyncFn } from "react-use";
 import { CloseIcon, CheckIcon } from "@chakra-ui/icons";
 import {
-  Heading,
   Box,
   Button,
-  VStack,
-  Flex,
   FormControl,
   FormLabel,
   FormErrorMessage,
-  FormHelperText,
-  Input,
   Textarea,
   Select,
-  Spinner,
   Stack,
+  Text,
 } from "@chakra-ui/react";
 import React from "react";
-import PhoneNumber from "awesome-phonenumber";
 
-const validatePhoneNumbers = (value) => {
-  if (!value) {
-    return undefined;
-  }
+import { validateRequired, validatePhoneNumbers } from "../utils/validations";
 
-  const invalidNumbers = [];
-  const numbers = value.split(",").map((number) => number.trim());
-
-  numbers.forEach((number) => {
-    const pnCa = PhoneNumber(number, "CA");
-    const pnUs = PhoneNumber(number, "US");
-
-    if (!pnCa.isValid() || !pnUs.isValid()) {
-      invalidNumbers.push(number);
-    }
-  });
-
-  if (invalidNumbers.length) {
-    return invalidNumbers
-      .map((number) => `${number} is an invalid CA/US number.`)
-      .join("\n");
-  }
-
-  return undefined;
-};
-
-export default BottomSection = ({
+const BottomSection = ({
   submitting,
   pristine,
   form,
   values,
-  setShow,
+  setShowBottom,
   numbers,
   invalid,
+  setShowTwilioSection,
 }) => {
   return (
     <Box>
+      <Box mb="20px">
+        <Text color="rgb(0,145,0)">
+          Success! Select your twilio number and send out your awesome messages
+          🙌🏻
+        </Text>
+      </Box>
       <Field
         name="from"
         validate={validateRequired}
@@ -64,7 +41,6 @@ export default BottomSection = ({
           <FormControl isInvalid={meta.touched && meta.error}>
             <FormLabel htmlFor="from">Twilio phone number</FormLabel>
             <Select {...input} id="from" placeholder="Phone Number">
-              <option value={undefined} />
               {numbers.map((number) => (
                 <option key={number} value={number}>
                   {number}
@@ -124,7 +100,8 @@ export default BottomSection = ({
         <Button
           type="reset"
           onClick={() => {
-            setShow(false);
+            setShowBottom(false);
+            setShowTwilioSection(true);
             form.reset();
           }}
           disabled={submitting || pristine}
@@ -135,3 +112,5 @@ export default BottomSection = ({
     </Box>
   );
 };
+
+export default BottomSection;
