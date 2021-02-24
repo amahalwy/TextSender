@@ -33,8 +33,6 @@ const MyForm = () => {
     setFormData(newArr);
   };
 
-  console.log(process.env.NEXT_PUBLIC_GA_ID);
-
   return (
     <Box h="100%" w="100%" m="auto">
       <Box
