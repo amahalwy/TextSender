@@ -1,6 +1,4 @@
-import { Form, Field } from "react-final-form";
-import { useTimeoutFn, useAsyncFn } from "react-use";
-import { CloseIcon, CheckIcon } from "@chakra-ui/icons";
+import { Field } from "react-final-form";
 import {
   Box,
   Button,
@@ -13,14 +11,12 @@ import {
   Text,
 } from "@chakra-ui/react";
 import React from "react";
-
 import { validateRequired, validatePhoneNumbers } from "../utils/validations";
 
 const BottomSection = ({
   submitting,
   pristine,
   form,
-  values,
   setShowBottom,
   numbers,
   invalid,
