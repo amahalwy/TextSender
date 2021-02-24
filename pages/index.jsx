@@ -4,6 +4,7 @@ import { Heading, Box, VStack, Text } from "@chakra-ui/react";
 import NumberSendRow from "../components/NumberSendRow";
 import BottomSection from "../components/BottomSection";
 import FormSection from "../components/FormSection";
+import GoogleAnalytics from "../components/GoogleAnalytics";
 
 const MyForm = () => {
   const [showBottom, setShowBottom] = React.useState(false);
@@ -33,10 +34,9 @@ const MyForm = () => {
     setFormData(newArr);
   };
 
-  console.log(process.env.NEXT_PUBLIC_GA_ID);
-
   return (
     <Box h="100%" w="100%" m="auto">
+      <GoogleAnalytics />
       <Box
         bg="white"
         p={5}
