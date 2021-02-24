@@ -20,7 +20,6 @@ import {
 import React from "react";
 import PhoneNumber from "awesome-phonenumber";
 import NumberSendRow from "../components/NumberSendRow";
-import { findConversation } from "./api/slack/FindConversation";
 import { publishMessage } from "./api/slack/SendSlackMsg";
 
 const fetchNumbers = (values) => {
