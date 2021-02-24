@@ -1,5 +1,6 @@
-import { Global, css } from "@emotion/react";
 import { ChakraProvider } from "@chakra-ui/react";
+import { useRouter } from "next/router";
+import * as gtag from "../utils/gtag";
 
 import "../styles/globals.css";
 

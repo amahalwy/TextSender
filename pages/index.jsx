@@ -19,6 +19,9 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 import PhoneNumber from "awesome-phonenumber";
+import NumberSendRow from "../components/NumberSendRow";
+import { findConversation } from "./api/slack/FindConversation";
+import { publishMessage } from "./api/slack/SendSlackMsg";
 
 const fetchNumbers = (values) => {
   // return fetch("http://localhost:3000/api/TwilNumbers/TwilioNumbers", {
@@ -28,170 +31,12 @@ const fetchNumbers = (values) => {
   }).then((res) => res.json());
 };
 
-const validatePhoneNumbers = (value) => {
-  if (!value) {
-    return undefined;
-  }
-
-  const invalidNumbers = [];
-  const numbers = value.split(",").map((number) => number.trim());
-
-  numbers.forEach((number) => {
-    const pnCa = PhoneNumber(number, "CA");
-    const pnUs = PhoneNumber(number, "US");
-
-    if (!pnCa.isValid() || !pnUs.isValid()) {
-      invalidNumbers.push(number);
-    }
-  });
-
-  if (invalidNumbers.length) {
-    return invalidNumbers
-      .map((number) => `${number} is an invalid CA/US number.`)
-      .join("\n");
-  }
-
-  return undefined;
-};
-
 const validateRequired = (value) => {
   if (!value) {
     return "Required";
   }
 
   return undefined;
-};
-
-// Function to create the bottom of the page (after clicking find numbers)
-const BottomSection = ({
-  submitting,
-  pristine,
-  form,
-  values,
-  setShow,
-  numbers,
-  invalid,
-}) => {
-  return (
-    <Box>
-      <Field
-        name="from"
-        validate={validateRequired}
-        render={({ input, meta }) => (
-          <FormControl isInvalid={meta.touched && meta.error}>
-            <FormLabel htmlFor="from">Twilio phone number</FormLabel>
-            <Select {...input} id="from" placeholder="Phone Number">
-              <option value={undefined} />
-              {numbers.map((number) => (
-                <option key={number} value={number}>
-                  {number}
-                </option>
-              ))}
-            </Select>
-            {meta.touched && meta.error && (
-              <FormErrorMessage>{meta.error}</FormErrorMessage>
-            )}
-          </FormControl>
-        )}
-      />
-
-      <Field name="message" validate={validateRequired}>
-        {({ input, meta }) => (
-          <FormControl isInvalid={meta.touched && meta.error}>
-            <FormLabel mt="10px" htmlFor="message">
-              Message
-            </FormLabel>
-            <Textarea {...input} id="message" placeholder="Type here..." />
-            {meta.touched && meta.error && (
-              <FormErrorMessage>{meta.error}</FormErrorMessage>
-            )}
-          </FormControl>
-        )}
-      </Field>
-
-      <Field
-        name="numbers"
-        validate={(value) =>
-          validateRequired(value) || validatePhoneNumbers(value)
-        }
-        render={({ input, meta }) => (
-          <FormControl isInvalid={meta.touched && meta.error}>
-            <FormLabel htmlFor="phoneNumbers">Phone numbers</FormLabel>
-            <Textarea
-              {...input}
-              id="phoneNumbers"
-              placeholder="Phone numbers"
-            />
-            {meta.touched && meta.error && (
-              <FormErrorMessage>{meta.error}</FormErrorMessage>
-            )}
-          </FormControl>
-        )}
-      />
-
-      <Stack direction="row" mt="24px">
-        <Button
-          type="submit"
-          disabled={submitting || pristine || invalid}
-          colorScheme="teal"
-        >
-          Submit
-        </Button>
-
-        <Button
-          type="reset"
-          onClick={() => {
-            setShow(false);
-            form.reset();
-          }}
-          disabled={submitting || pristine}
-        >
-          Reset form
-        </Button>
-      </Stack>
-    </Box>
-  );
-};
-
-const NumberSendRow = ({ data }) => {
-  const [state, fetchRequest] = useAsyncFn(async () => {
-    // return fetch("http://localhost:3000/api/SendSMS/CreateSMS", {
-    const res = await fetch(
-      "https://text-sender.vercel.app/api/SendSMS/CreateSMS",
-      {
-        method: "POST",
-        body: JSON.stringify(data),
-      }
-    );
-    return await res.json();
-  }, [data]);
-  const callFn = () => {
-    if (!state.loading) {
-      return fetchRequest();
-    }
-  };
-  const [isReady, cancel, reset] = useTimeoutFn(callFn, data.timeToSend);
-
-  setTimeout(() => {
-    callFn;
-  }, data.timeToSend);
-
-  return (
-    <Box p={5} shadow="md" borderWidth="1px">
-      <Box d="flex" alignContent="center">
-        <Box mr="4px">
-          {!isReady() || state.loading ? (
-            <Spinner />
-          ) : !(!isReady() || state.loading) && state?.value?.error_code ? (
-            <CloseIcon />
-          ) : (
-            <CheckIcon />
-          )}
-        </Box>
-        <Box>{data.to}</Box>
-      </Box>
-    </Box>
-  );
 };
 
 export default function MyForm() {
@@ -304,6 +149,15 @@ export default function MyForm() {
                   }}
                 >
                   Find number(s)
+                </Button>
+              </Box>
+              <Box>
+                <Button
+                  onClick={() => {
+                    publishMessage("Hello!!");
+                  }}
+                >
+                  Slack Find Convo
                 </Button>
               </Box>
               {show && (
