@@ -15,6 +15,8 @@ class MyDocument extends Document {
   render() {
     return (
       <Html>
+        {console.log(process.env.NODE_ENV === "production" && process.browser)}
+        {console.log(process.env.NEXT_PUBLIC_GA_ID)}
         {process.env.NODE_ENV === "production" && process.browser ? (
           <Head>
             <script
