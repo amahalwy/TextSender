@@ -5,6 +5,7 @@ import NumberSendRow from "../components/NumberSendRow";
 import BottomSection from "../components/BottomSection";
 import FormSection from "../components/FormSection";
 import GoogleAnalytics from "../components/GoogleAnalytics";
+import { publishMessage } from "./api/slack/SendSlackMsg";
 
 const MyForm = () => {
   const [showBottom, setShowBottom] = React.useState(false);
@@ -31,6 +32,7 @@ const MyForm = () => {
       timeToSend: Math.random() * (1000 * (index + 1)),
     }));
 
+    publishMessage();
     setFormData(newArr);
   };
 

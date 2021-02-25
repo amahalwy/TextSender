@@ -90,7 +90,7 @@ const BottomSection = ({
           disabled={submitting || pristine || invalid}
           colorScheme="teal"
         >
-          Submit
+          Send
         </Button>
 
         <Button
