@@ -37,7 +37,11 @@ const MyForm = () => {
   };
 
   return (
-    <Box h="100%" w="100%" m="auto">
+    <Box
+      h="100%"
+      w={{ base: "80%", lg: "100%" }}
+      m={{ base: "6% auto", lg: "auto" }}
+    >
       <GoogleAnalytics />
       <Box
         bg="white"
