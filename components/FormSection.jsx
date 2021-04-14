@@ -80,7 +80,7 @@ const FormSection = ({
           </FormControl>
         )}
       />{" "}
-      <Flex mt={"24px"} m="10px auto" justifyContent="center">
+      <Flex mt="6%" justifyContent="center">
         <Button
           type="button"
           disabled={submitting || pristine || invalid || loadingNumbers}
