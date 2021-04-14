@@ -49,7 +49,7 @@ const MyForm = () => {
         shadow="md"
         borderWidth="1px"
         m="2% auto"
-        w={["100%", "26%"]}
+        w={{ base: "100%", md: "80%", lg: "36%", xl: "26%" }}
       >
         <Form
           onSubmit={onSubmit}
@@ -61,7 +61,10 @@ const MyForm = () => {
             values,
             invalid,
           }) => (
-            <form onSubmit={handleSubmit} style={{ margin: "20px auto" }}>
+            <form
+              onSubmit={handleSubmit}
+              style={{ margin: "0 auto", padding: "10px 0" }}
+            >
               <Box mb="24px">
                 <Heading>Send your text</Heading>
                 <p>Please add your credentials for twilio below</p>
@@ -81,12 +84,11 @@ const MyForm = () => {
               ) : null}
 
               {showBottom && (
-                <Box mt="24px">
+                <Box mt="2%">
                   <BottomSection
                     submitting={submitting}
                     pristine={pristine}
                     form={form}
-                    values={values}
                     invalid={invalid}
                     numbers={numbers}
                     setShowBottom={setShowBottom}
