@@ -1,5 +1,6 @@
 import React from "react";
 import Head from "next/head";
+import endpoints from "../config/endpoints";
 
 const GoogleAnalytics: React.FC = () => {
   return (
@@ -8,7 +9,7 @@ const GoogleAnalytics: React.FC = () => {
         <Head>
           <script
             async
-            src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}
+            src={`https://www.googletagmanager.com/gtag/js?id=${endpoints.GAid}`}
           ></script>
           <script
             async
@@ -17,7 +18,7 @@ const GoogleAnalytics: React.FC = () => {
                 function gtag(){dataLayer.push(arguments);}
                 gtag("js", new Date());
 
-                gtag("config", "${process.env.NEXT_PUBLIC_GA_ID}");`,
+                gtag("config", "${endpoints.GAid}");`,
             }}
           />
         </Head>
