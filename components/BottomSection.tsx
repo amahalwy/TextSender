@@ -12,14 +12,15 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 import { validateRequired, validatePhoneNumbers } from "../utils/validations";
+import { IBottomSection } from "../typescript/IBottomSection";
 
-const BottomSection = ({
-  submitting,
-  pristine,
+const BottomSection: React.FC<IBottomSection> = ({
   form,
-  setShowBottom,
   numbers,
   invalid,
+  pristine,
+  submitting,
+  setShowBottom,
   setShowTwilioSection,
 }) => {
   return (
