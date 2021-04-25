@@ -18,3 +18,15 @@ export interface IBottomSection {
   setShowBottom: (value: boolean) => void;
   setShowTwilioSection: (value: boolean) => void;
 }
+
+export interface IFormSection {
+  values: Values;
+  submitting: boolean;
+  pristine: boolean;
+  invalid: boolean;
+  loadingNumbers: boolean;
+  setLoadingNumbers: (value: boolean) => void;
+  setNumbers: (value: string[]) => void;
+  setShowTwilioSection: (value: boolean) => void;
+  setShowBottom: (value: boolean) => void;
+}
