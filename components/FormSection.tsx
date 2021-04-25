@@ -10,26 +10,28 @@ import {
 } from "@chakra-ui/react";
 import { Field } from "react-final-form";
 import { validateRequired } from "../utils/validations";
+import { IFormSection, IValues } from "../typescript/interfaces";
+import endpoints from "../config/endpoints";
 
-const fetchNumbers = (values) => {
-  return fetch(process.env.NEXT_PUBLIC_FIND_TWILIO_ENDPOINT, {
+const fetchNumbers = async (values: IValues) => {
+  return await fetch(endpoints.FindTwilioEndpoint, {
     method: "POST",
     body: JSON.stringify(values),
   }).then((res) => res.json());
 };
 
-const FormSection = ({
+const FormSection: React.FC<IFormSection> = ({
   values,
-  submitting,
-  pristine,
   invalid,
+  pristine,
+  submitting,
   loadingNumbers,
-  setLoadingNumbers,
   setNumbers,
-  setShowTwilioSection,
   setShowBottom,
+  setLoadingNumbers,
+  setShowTwilioSection,
 }) => {
-  const findNumbers = (values) => {
+  const findNumbers = (values: IValues) => {
     setLoadingNumbers(true);
     fetchNumbers(values).then((numbersFromTwillio) => {
       setNumbers(numbersFromTwillio);
@@ -40,7 +42,7 @@ const FormSection = ({
   };
 
   return (
-    <Box>
+    <Box as="section">
       <Field
         name="accountSid"
         validate={validateRequired}
@@ -86,9 +88,7 @@ const FormSection = ({
           disabled={submitting || pristine || invalid || loadingNumbers}
           isLoading={loadingNumbers}
           loadingText="Searching..."
-          onClick={() => {
-            findNumbers(values);
-          }}
+          onClick={() => findNumbers(values)}
         >
           Find number(s)
         </Button>
