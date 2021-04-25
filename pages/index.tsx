@@ -75,7 +75,11 @@ const MyForm: React.FC = () => {
             >
               <Box mb="24px" as="header">
                 <Heading>Send your text</Heading>
-                <Text>Please add your credentials for twilio below</Text>
+                <Text>
+                  {!showBottom
+                    ? `Please add your credentials for twilio below`
+                    : "Select your number below and start sending!"}
+                </Text>
               </Box>
               {showTwilioSection && (
                 <FormSection
