@@ -1,10 +1,10 @@
 import React from "react";
 import Head from "next/head";
 
-const GoogleAnalytics = () => {
+const GoogleAnalytics: React.FC = () => {
   return (
     <>
-      {process.env.NODE_ENV === "production" && process.browser ? (
+      {process.env.NODE_ENV === "production" && process.browser && (
         <Head>
           <script
             async
@@ -21,7 +21,7 @@ const GoogleAnalytics = () => {
             }}
           />
         </Head>
-      ) : null}
+      )}
     </>
   );
 };
