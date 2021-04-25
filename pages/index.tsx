@@ -1,4 +1,5 @@
 import React from "react";
+import Head from "next/head";
 import { Form } from "react-final-form";
 import { Heading, Box, VStack, Text } from "@chakra-ui/react";
 import NumberSendRow from "../components/NumberSendRow";
@@ -48,6 +49,13 @@ const MyForm: React.FC = () => {
       m={{ base: "6% auto", lg: "auto" }}
       as="main"
     >
+      <Head>
+        <title>Text-Sender</title>
+        <meta
+          name="description"
+          content="A simple and easy application to send SMS through Twilio API."
+        />
+      </Head>
       <GoogleAnalytics />
       <Box
         p={5}
