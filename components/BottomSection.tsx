@@ -12,7 +12,7 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 import { validateRequired, validatePhoneNumbers } from "../utils/validations";
-import { IBottomSection } from "../typescript/IBottomSection";
+import { IBottomSection } from "../typescript/interfaces";
 
 const BottomSection: React.FC<IBottomSection> = ({
   form,
