@@ -12,6 +12,7 @@ class MyDocument extends Document {
     return (
       <Html lang="en" title="Text-Sender">
         <Head />
+        <title>Text-Sender</title>
         <body>
           <Main />
           <NextScript />
