@@ -1,24 +1,19 @@
 import PhoneNumber from "awesome-phonenumber";
 
-export const validateRequired = (value) => {
-  if (!value) {
-    return "Required";
-  }
+export const validateRequired = (value: string) =>
+  value ? undefined : "Required";
 
-  return undefined;
-};
-
-export const validatePhoneNumbers = (value) => {
+export const validatePhoneNumbers = (value: string) => {
   if (!value) {
     return undefined;
   }
 
-  const invalidNumbers = [];
-  const numbers = value.split(",").map((number) => number.trim());
+  const invalidNumbers: string[] = [];
+  const numbers: string[] = value.split(",").map((number) => number.trim());
 
   numbers.forEach((number) => {
-    const pnCa = PhoneNumber(number, "CA");
-    const pnUs = PhoneNumber(number, "US");
+    const pnCa = new PhoneNumber(number, "CA");
+    const pnUs = new PhoneNumber(number, "US");
 
     if (!pnCa.isValid() || !pnUs.isValid()) {
       invalidNumbers.push(number);
