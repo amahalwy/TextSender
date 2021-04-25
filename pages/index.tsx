@@ -50,6 +50,7 @@ const MyForm: React.FC = () => {
       as="main"
     >
       <Head>
+        <title>Text-Sender</title>
         <meta
           name="description"
           content="A simple and easy application to send SMS through Twilio API."
