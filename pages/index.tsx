@@ -5,37 +5,21 @@ import NumberSendRow from "../components/NumberSendRow";
 import BottomSection from "../components/BottomSection";
 import FormSection from "../components/FormSection";
 import GoogleAnalytics from "../components/GoogleAnalytics";
-import { publishMessage } from "./api/slack/SendSlackMsg";
+import publishMessage from "./api/slack/SendSlackMsg";
+import { IValues, IReceiver } from "../typescript/interfaces";
 
-interface Number {
-  accountSid: string;
-  apiKey: string;
-  apiSecret: string;
-  message: string;
-  from: string;
-  to: string;
-  timeToSend: number;
-}
-
-const MyForm = () => {
-  const [showBottom, setShowBottom] = React.useState<boolean>(false);
+const MyForm: React.FC = () => {
   const [numbers, setNumbers] = React.useState<string[]>([]);
-  const [formData, setFormData] = React.useState<Number[]>([]);
-  const [successfulTexts, setSuccessfulTexts] = React.useState<number>(0);
-  const [failedTexts, setFailedTexts] = React.useState<number>(0);
+  const [formData, setFormData] = React.useState<IReceiver[]>([]);
+  const [showBottom, setShowBottom] = React.useState<boolean>(false);
   const [loadingNumbers, setLoadingNumbers] = React.useState<boolean>(false);
   const [showTwilioSection, setShowTwilioSection] = React.useState<boolean>(
     true
   );
+  const [failedTexts, setFailedTexts] = React.useState<number>(0);
+  const [successfulTexts, setSuccessfulTexts] = React.useState<number>(0);
 
-  const onSubmit = (values: {
-    numbers?: any;
-    accountSid?: string;
-    apiKey?: string;
-    apiSecret?: string;
-    message?: string;
-    from?: string;
-  }) => {
+  const onSubmit = (values: IValues) => {
     const { accountSid, apiKey, apiSecret, message, from } = values;
     const data = {
       accountSid,
@@ -45,7 +29,7 @@ const MyForm = () => {
       from,
     };
 
-    const newArr = values.numbers
+    const newArr: IReceiver[] = values.numbers
       .split(",")
       .map((number: string, index: number) => ({
         ...data,
@@ -62,14 +46,17 @@ const MyForm = () => {
       h="100%"
       w={{ base: "80%", lg: "100%" }}
       m={{ base: "6% auto", lg: "auto" }}
+      as="main"
     >
       <GoogleAnalytics />
       <Box
-        bg="white"
         p={5}
-        shadow="md"
-        borderWidth="1px"
+        bg="white"
         m="2% auto"
+        shadow="md"
+        as="section"
+        borderRadius="lg"
+        borderWidth="1px"
         w={{ base: "100%", md: "80%", lg: "36%", xl: "26%" }}
       >
         <Form
@@ -86,7 +73,7 @@ const MyForm = () => {
               onSubmit={handleSubmit}
               style={{ margin: "0 auto", padding: "10px 0" }}
             >
-              <Box mb="24px">
+              <Box mb="24px" as="header">
                 <Heading>Send your text</Heading>
                 <Text>Please add your credentials for twilio below</Text>
               </Box>
@@ -103,7 +90,6 @@ const MyForm = () => {
                   setShowTwilioSection={setShowTwilioSection}
                 />
               )}
-
               {showBottom && (
                 <Box mt="2%">
                   <BottomSection
@@ -122,34 +108,36 @@ const MyForm = () => {
         />
 
         {formData.length > 0 && (
-          <Box d="flex" justifyContent="space-between" mb="6px">
-            <Box>
-              <Text fontStyle="italic" d="inline" color="rgb(0,200,0)">
-                Successful: {""}
-              </Text>
-              <Text d="inline">{successfulTexts}</Text>
+          <Box as="footer">
+            <Box d="flex" justifyContent="space-between" mb="6px">
+              <Box>
+                <Text fontStyle="italic" d="inline" color="rgb(0,200,0)">
+                  Successful: {""}
+                </Text>
+                <Text d="inline">{successfulTexts}</Text>
+              </Box>
+              <Box>
+                <Text fontStyle="italic" d="inline" color="rgb(200,0,0)">
+                  Failed: {""}
+                </Text>
+                <Text d="inline">{failedTexts}</Text>
+              </Box>
             </Box>
-            <Box>
-              <Text fontStyle="italic" d="inline" color="rgb(200,0,0)">
-                Failed: {""}
-              </Text>
-              <Text d="inline">{failedTexts}</Text>
-            </Box>
+
+            <VStack spacing={4} align="stretch">
+              {formData.map((data, i) => (
+                <NumberSendRow
+                  key={i}
+                  data={data}
+                  failedTexts={failedTexts}
+                  successfulTexts={successfulTexts}
+                  setFailedTexts={setFailedTexts}
+                  setSuccessfulTexts={setSuccessfulTexts}
+                />
+              ))}
+            </VStack>
           </Box>
         )}
-
-        <VStack spacing={4} align="stretch">
-          {formData.map((data, i) => (
-            <NumberSendRow
-              key={i}
-              data={data}
-              failedTexts={failedTexts}
-              successfulTexts={successfulTexts}
-              setFailedTexts={setFailedTexts}
-              setSuccessfulTexts={setSuccessfulTexts}
-            />
-          ))}
-        </VStack>
       </Box>
     </Box>
   );
