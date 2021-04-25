@@ -10,10 +10,10 @@ import {
 } from "@chakra-ui/react";
 import { Field } from "react-final-form";
 import { validateRequired } from "../utils/validations";
-import { IFormSection, Values } from "../typescript/interfaces";
+import { IFormSection, IValues } from "../typescript/interfaces";
 import endpoints from "../config/endpoints";
 
-const fetchNumbers = async (values: Values) => {
+const fetchNumbers = async (values: IValues) => {
   return await fetch(endpoints.FindTwilioEndpoint, {
     method: "POST",
     body: JSON.stringify(values),
@@ -31,7 +31,7 @@ const FormSection: React.FC<IFormSection> = ({
   setLoadingNumbers,
   setShowTwilioSection,
 }) => {
-  const findNumbers = (values: Values) => {
+  const findNumbers = (values: IValues) => {
     setLoadingNumbers(true);
     fetchNumbers(values).then((numbersFromTwillio) => {
       setNumbers(numbersFromTwillio);
