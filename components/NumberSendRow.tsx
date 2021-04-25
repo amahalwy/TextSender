@@ -2,8 +2,10 @@ import { useTimeoutFn, useAsyncFn } from "react-use";
 import React from "react";
 import { Box, Spinner } from "@chakra-ui/react";
 import { CloseIcon, CheckIcon } from "@chakra-ui/icons";
+import endpoints from "../config/endpoints";
+import { IFailed, INumberSendRow, ISuccess } from "../typescript/interfaces";
 
-const SuccessfulText = ({
+const SuccessfulText: React.FC<ISuccess> = ({
   addSuccess,
   setAddSuccess,
   successfulTexts,
@@ -19,7 +21,7 @@ const SuccessfulText = ({
   return <CheckIcon />;
 };
 
-const FailedText = ({
+const FailedText: React.FC<IFailed> = ({
   addFailed,
   setAddFailed,
   failedTexts,
@@ -34,8 +36,8 @@ const FailedText = ({
   return <CloseIcon />;
 };
 
-const NumberSendRow = ({
-  data,
+const NumberSendRow: React.FC<INumberSendRow> = ({
+  receiver,
   failedTexts,
   successfulTexts,
   setFailedTexts,
@@ -44,18 +46,18 @@ const NumberSendRow = ({
   const [addSuccess, setAddSuccess] = React.useState(true);
   const [addFailed, setAddFailed] = React.useState(true);
   const [state, fetchRequest] = useAsyncFn(async () => {
-    const res = await fetch(process.env.NEXT_PUBLIC_SEND_SMS_ENDPOINT, {
+    const res = await fetch(endpoints.SendSMS, {
       method: "POST",
-      body: JSON.stringify(data),
+      body: JSON.stringify(receiver),
     });
     return await res.json();
-  }, [data]);
+  }, [receiver]);
   const callFn = () => {
     if (!state.loading) {
       return fetchRequest();
     }
   };
-  const [isReady] = useTimeoutFn(callFn, data.timeToSend);
+  const [isReady] = useTimeoutFn(callFn, receiver.timeToSend);
 
   return (
     <Box p={5} shadow="md" borderWidth="1px">
@@ -79,7 +81,7 @@ const NumberSendRow = ({
             />
           )}
         </Box>
-        <Box>{data.to}</Box>
+        <Box>{receiver.to}</Box>
       </Box>
     </Box>
   );
