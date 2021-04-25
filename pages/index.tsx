@@ -7,16 +7,35 @@ import FormSection from "../components/FormSection";
 import GoogleAnalytics from "../components/GoogleAnalytics";
 import { publishMessage } from "./api/slack/SendSlackMsg";
 
-const MyForm = () => {
-  const [showBottom, setShowBottom] = React.useState(false);
-  const [numbers, setNumbers] = React.useState([]);
-  const [formData, setFormData] = React.useState([]);
-  const [successfulTexts, setSuccessfulTexts] = React.useState(0);
-  const [failedTexts, setFailedTexts] = React.useState(0);
-  const [loadingNumbers, setLoadingNumbers] = React.useState(false);
-  const [showTwilioSection, setShowTwilioSection] = React.useState(true);
+interface Number {
+  accountSid: string;
+  apiKey: string;
+  apiSecret: string;
+  message: string;
+  from: string;
+  to: string;
+  timeToSend: number;
+}
 
-  const onSubmit = (values) => {
+const MyForm = () => {
+  const [showBottom, setShowBottom] = React.useState<boolean>(false);
+  const [numbers, setNumbers] = React.useState<string[]>([]);
+  const [formData, setFormData] = React.useState<Number[]>([]);
+  const [successfulTexts, setSuccessfulTexts] = React.useState<number>(0);
+  const [failedTexts, setFailedTexts] = React.useState<number>(0);
+  const [loadingNumbers, setLoadingNumbers] = React.useState<boolean>(false);
+  const [showTwilioSection, setShowTwilioSection] = React.useState<boolean>(
+    true
+  );
+
+  const onSubmit = (values: {
+    numbers?: any;
+    accountSid?: string;
+    apiKey?: string;
+    apiSecret?: string;
+    message?: string;
+    from?: string;
+  }) => {
     const { accountSid, apiKey, apiSecret, message, from } = values;
     const data = {
       accountSid,
@@ -26,11 +45,13 @@ const MyForm = () => {
       from,
     };
 
-    const newArr = values.numbers.split(",").map((number, index) => ({
-      ...data,
-      to: number.trim(),
-      timeToSend: Math.random() * (1000 * (index + 1)),
-    }));
+    const newArr = values.numbers
+      .split(",")
+      .map((number: string, index: number) => ({
+        ...data,
+        to: number.trim(),
+        timeToSend: Math.random() * (1000 * (index + 1)),
+      }));
 
     publishMessage();
     setFormData(newArr);
@@ -67,9 +88,9 @@ const MyForm = () => {
             >
               <Box mb="24px">
                 <Heading>Send your text</Heading>
-                <p>Please add your credentials for twilio below</p>
+                <Text>Please add your credentials for twilio below</Text>
               </Box>
-              {showTwilioSection ? (
+              {showTwilioSection && (
                 <FormSection
                   values={values}
                   submitting={submitting}
@@ -81,7 +102,7 @@ const MyForm = () => {
                   setLoadingNumbers={setLoadingNumbers}
                   setShowTwilioSection={setShowTwilioSection}
                 />
-              ) : null}
+              )}
 
               {showBottom && (
                 <Box mt="2%">
@@ -99,7 +120,8 @@ const MyForm = () => {
             </form>
           )}
         />
-        {formData.length > 0 ? (
+
+        {formData.length > 0 && (
           <Box d="flex" justifyContent="space-between" mb="6px">
             <Box>
               <Text fontStyle="italic" d="inline" color="rgb(0,200,0)">
@@ -114,7 +136,7 @@ const MyForm = () => {
               <Text d="inline">{failedTexts}</Text>
             </Box>
           </Box>
-        ) : null}
+        )}
 
         <VStack spacing={4} align="stretch">
           {formData.map((data, i) => (
