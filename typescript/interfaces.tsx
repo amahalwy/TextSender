@@ -47,3 +47,25 @@ export interface IReceiver {
   message: string | undefined;
   from: string | undefined;
 }
+
+export interface ISuccess {
+  addSuccess: boolean;
+  setAddSuccess: (value: boolean) => void;
+  successfulTexts: number;
+  setSuccessfulTexts: (value: number) => void;
+}
+
+export interface IFailed {
+  addFailed: boolean;
+  setAddFailed: (value: boolean) => void;
+  failedTexts: number;
+  setFailedTexts: (value: number) => void;
+}
+
+export interface INumberSendRow {
+  receiver: IReceiver;
+  failedTexts: number;
+  successfulTexts: number;
+  setFailedTexts: (value: number) => void;
+  setSuccessfulTexts: (value: number) => void;
+}
