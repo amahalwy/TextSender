@@ -1,6 +1,6 @@
 import { FormApi } from "final-form";
 
-interface Values {
+export interface Values {
   numbers: string[];
   accountSid?: string | undefined;
   apiKey?: string | undefined;
