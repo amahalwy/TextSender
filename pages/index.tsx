@@ -125,10 +125,10 @@ const MyForm: React.FC = () => {
             </Box>
 
             <VStack spacing={4} align="stretch">
-              {formData.map((data, i) => (
+              {formData.map((receiver: IReceiver, i: number) => (
                 <NumberSendRow
                   key={i}
-                  data={data}
+                  receiver={receiver}
                   failedTexts={failedTexts}
                   successfulTexts={successfulTexts}
                   setFailedTexts={setFailedTexts}
