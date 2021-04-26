@@ -17,11 +17,11 @@ export interface IBottomSection {
   setShowTwilioSection: (value: boolean) => void;
 }
 export interface IFormSection {
-  values: IValues;
-  submitting: boolean;
-  pristine: boolean;
-  invalid: boolean;
+  numbers: string[];
+  showBottom: boolean;
   loadingNumbers: boolean;
+  showTwilioSection: boolean;
+  setFormData: (values: IReceiver[]) => void;
   setLoadingNumbers: (value: boolean) => void;
   setNumbers: (value: string[]) => void;
   setShowTwilioSection: (value: boolean) => void;
