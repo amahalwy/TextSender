@@ -67,56 +67,16 @@ const MyForm: React.FC = () => {
         borderWidth="1px"
         w={{ base: "100%", md: "80%", lg: "36%", xl: "26%" }}
       >
-        <Form
-          onSubmit={onSubmit}
-          render={({
-            handleSubmit,
-            form,
-            submitting,
-            pristine,
-            values,
-            invalid,
-          }) => (
-            <form
-              onSubmit={handleSubmit}
-              style={{ margin: "0 auto", padding: "10px 0" }}
-            >
-              <Box mb="24px" as="header">
-                <Heading>Send your text</Heading>
-                <Text>
-                  {!showBottom
-                    ? `Please add your credentials for twilio below`
-                    : "Select your number below and start sending!"}
-                </Text>
-              </Box>
-              {showTwilioSection && (
-                <FormSection
-                  values={values}
-                  submitting={submitting}
-                  pristine={pristine}
-                  invalid={invalid}
-                  loadingNumbers={loadingNumbers}
-                  setNumbers={setNumbers}
-                  setShowBottom={setShowBottom}
-                  setLoadingNumbers={setLoadingNumbers}
-                  setShowTwilioSection={setShowTwilioSection}
-                />
-              )}
-              {showBottom && (
-                <Box mt="2%">
-                  <BottomSection
-                    submitting={submitting}
-                    pristine={pristine}
-                    form={form}
-                    invalid={invalid}
-                    numbers={numbers}
-                    setShowBottom={setShowBottom}
-                    setShowTwilioSection={setShowTwilioSection}
-                  />
-                </Box>
-              )}
-            </form>
-          )}
+        <FormSection
+          numbers={numbers}
+          showBottom={showBottom}
+          loadingNumbers={loadingNumbers}
+          showTwilioSection={showTwilioSection}
+          setNumbers={setNumbers}
+          setFormData={setFormData}
+          setShowBottom={setShowBottom}
+          setLoadingNumbers={setLoadingNumbers}
+          setShowTwilioSection={setShowTwilioSection}
         />
 
         {formData.length > 0 && (
