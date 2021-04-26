@@ -69,3 +69,12 @@ export interface INumberSendRow {
   setFailedTexts: (value: number) => void;
   setSuccessfulTexts: (value: number) => void;
 }
+
+export interface ISubmitSection {
+  submitting: boolean;
+  pristine: boolean;
+  invalid: boolean;
+  loadingNumbers: boolean;
+  findNumbers: (values: IValues) => void;
+  values: IValues;
+}
