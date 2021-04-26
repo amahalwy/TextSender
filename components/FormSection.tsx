@@ -10,7 +10,11 @@ import {
 } from "@chakra-ui/react";
 import { Field } from "react-final-form";
 import { validateRequired } from "../utils/validations";
-import { IFormSection, IValues } from "../typescript/interfaces";
+import {
+  IFormSection,
+  ISubmitSection,
+  IValues,
+} from "../typescript/interfaces";
 import endpoints from "../config/endpoints";
 
 const fetchNumbers = async (values: IValues) => {
@@ -19,6 +23,75 @@ const fetchNumbers = async (values: IValues) => {
     body: JSON.stringify(values),
   }).then((res) => res.json());
 };
+
+const Sid = () => (
+  <Field
+    name="accountSid"
+    validate={validateRequired}
+    render={({ input, meta }) => (
+      <FormControl isInvalid={meta.touched && meta.error}>
+        <FormLabel htmlFor="sid">Account SID</FormLabel>
+        <Input {...input} id="sid" placeholder="Account SID" />
+        {meta.touched && meta.error && (
+          <FormErrorMessage>{meta.error}</FormErrorMessage>
+        )}
+      </FormControl>
+    )}
+  />
+);
+
+const API = () => (
+  <Field
+    name="apiKey"
+    validate={validateRequired}
+    render={({ input, meta }) => (
+      <FormControl mt="10px" isInvalid={meta.touched && meta.error}>
+        <FormLabel htmlFor="api-key">API Key</FormLabel>
+        <Input {...input} id="api-key" placeholder="API Key" />
+        {meta.touched && meta.error && (
+          <FormErrorMessage>{meta.error}</FormErrorMessage>
+        )}
+      </FormControl>
+    )}
+  />
+);
+
+const Secret = () => (
+  <Field
+    name="apiSecret"
+    validate={validateRequired}
+    render={({ input, meta }) => (
+      <FormControl mt="10px" isInvalid={meta.touched && meta.error}>
+        <FormLabel htmlFor="api-secret">API Key Secret</FormLabel>
+        <Input {...input} id="api-secret" placeholder="API Key Secret" />
+        {meta.touched && meta.error && (
+          <FormErrorMessage>{meta.error}</FormErrorMessage>
+        )}
+      </FormControl>
+    )}
+  />
+);
+
+const SubmitSection: React.FC<ISubmitSection> = ({
+  submitting,
+  pristine,
+  invalid,
+  loadingNumbers,
+  findNumbers,
+  values,
+}) => (
+  <Flex mt="6%" justifyContent="center">
+    <Button
+      type="button"
+      disabled={submitting || pristine || invalid || loadingNumbers}
+      isLoading={loadingNumbers}
+      loadingText="Searching..."
+      onClick={() => findNumbers(values)}
+    >
+      Find number(s)
+    </Button>
+  </Flex>
+);
 
 const FormSection: React.FC<IFormSection> = ({
   values,
@@ -43,56 +116,16 @@ const FormSection: React.FC<IFormSection> = ({
 
   return (
     <Box as="section">
-      <Field
-        name="accountSid"
-        validate={validateRequired}
-        render={({ input, meta }) => (
-          <FormControl isInvalid={meta.touched && meta.error}>
-            <FormLabel htmlFor="sid">Account SID</FormLabel>
-            <Input {...input} id="sid" placeholder="Account SID" />
-            {meta.touched && meta.error && (
-              <FormErrorMessage>{meta.error}</FormErrorMessage>
-            )}
-          </FormControl>
-        )}
+      <Sid />
+      <API /> <Secret />{" "}
+      <SubmitSection
+        submitting={submitting}
+        pristine={pristine}
+        invalid={invalid}
+        loadingNumbers={loadingNumbers}
+        findNumbers={findNumbers}
+        values={values}
       />
-      <Field
-        name="apiKey"
-        validate={validateRequired}
-        render={({ input, meta }) => (
-          <FormControl mt="10px" isInvalid={meta.touched && meta.error}>
-            <FormLabel htmlFor="api-key">API Key</FormLabel>
-            <Input {...input} id="api-key" placeholder="API Key" />
-            {meta.touched && meta.error && (
-              <FormErrorMessage>{meta.error}</FormErrorMessage>
-            )}
-          </FormControl>
-        )}
-      />{" "}
-      <Field
-        name="apiSecret"
-        validate={validateRequired}
-        render={({ input, meta }) => (
-          <FormControl mt="10px" isInvalid={meta.touched && meta.error}>
-            <FormLabel htmlFor="api-secret">API Key Secret</FormLabel>
-            <Input {...input} id="api-secret" placeholder="API Key Secret" />
-            {meta.touched && meta.error && (
-              <FormErrorMessage>{meta.error}</FormErrorMessage>
-            )}
-          </FormControl>
-        )}
-      />{" "}
-      <Flex mt="6%" justifyContent="center">
-        <Button
-          type="button"
-          disabled={submitting || pristine || invalid || loadingNumbers}
-          isLoading={loadingNumbers}
-          loadingText="Searching..."
-          onClick={() => findNumbers(values)}
-        >
-          Find number(s)
-        </Button>
-      </Flex>
     </Box>
   );
 };
