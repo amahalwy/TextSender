@@ -1,11 +1,15 @@
+//@ts-nocheck
 import GoogleAnalytics from "../../components/GoogleAnalytics";
 import React from "react";
 import { render } from "@testing-library/react";
-import endpoints from "../../config/endpoints";
 
 describe("Google Analytics Component", () => {
   test("Renders", () => {
+    process.env.NODE_ENV = "production";
+    process.browser = true;
+
     const component = render(<GoogleAnalytics />);
-    expect(component).toBeTruthy();
+    const div = component.queryByTestId("ga-div");
+    expect(div).toBeFalsy();
   });
 });
