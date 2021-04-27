@@ -37,7 +37,11 @@ export const FailedText: React.FC<IFailed> = ({
       setAddFailed(false);
     }
   }, []);
-  return <CloseIcon />;
+  return (
+    <Box data-testid="fail-box">
+      <CloseIcon data-testid="close" />
+    </Box>
+  );
 };
 
 const NumberSendRow: React.FC<INumberSendRow> = ({
