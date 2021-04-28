@@ -5,7 +5,7 @@ import { CloseIcon, CheckIcon } from "@chakra-ui/icons";
 import endpoints from "../config/endpoints";
 import { IFailed, INumberSendRow, ISuccess } from "../typescript/interfaces";
 
-const SuccessfulText: React.FC<ISuccess> = ({
+export const SuccessfulText: React.FC<ISuccess> = ({
   addSuccess,
   setAddSuccess,
   successfulTexts,
@@ -18,10 +18,14 @@ const SuccessfulText: React.FC<ISuccess> = ({
     }
   }, []);
 
-  return <CheckIcon />;
+  return (
+    <Box data-testid="success-box">
+      <CheckIcon data-testid="check" />
+    </Box>
+  );
 };
 
-const FailedText: React.FC<IFailed> = ({
+export const FailedText: React.FC<IFailed> = ({
   addFailed,
   setAddFailed,
   failedTexts,
@@ -33,7 +37,11 @@ const FailedText: React.FC<IFailed> = ({
       setAddFailed(false);
     }
   }, []);
-  return <CloseIcon />;
+  return (
+    <Box data-testid="fail-box">
+      <CloseIcon data-testid="close" />
+    </Box>
+  );
 };
 
 const NumberSendRow: React.FC<INumberSendRow> = ({

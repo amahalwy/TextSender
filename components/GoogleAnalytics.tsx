@@ -3,7 +3,7 @@ import Head from "next/head";
 import endpoints from "../config/endpoints";
 
 const GoogleAnalytics: React.FC = () => (
-  <>
+  <div>
     {process.env.NODE_ENV === "production" && process.browser && (
       <Head>
         <script
@@ -20,9 +20,10 @@ const GoogleAnalytics: React.FC = () => (
                 gtag("config", "${endpoints.GAid}");`,
           }}
         />
+        <div title="hello" data-testid="ga-div"></div>
       </Head>
     )}
-  </>
+  </div>
 );
 
 export default GoogleAnalytics;

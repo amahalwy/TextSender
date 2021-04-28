@@ -35,7 +35,12 @@ const BottomSection: React.FC<IBottomSection> = ({
       render={({ input, meta }) => (
         <FormControl isInvalid={meta.touched && meta.error}>
           <FormLabel htmlFor="from">Twilio phone number</FormLabel>
-          <Select {...input} id="from" placeholder="Phone Number">
+          <Select
+            {...input}
+            id="from"
+            placeholder="Phone Number"
+            data-testid="select-bottom"
+          >
             {numbers.map((number) => (
               <option key={number} value={number}>
                 {number}
@@ -71,7 +76,12 @@ const BottomSection: React.FC<IBottomSection> = ({
       render={({ input, meta }) => (
         <FormControl isInvalid={meta.touched && meta.error}>
           <FormLabel htmlFor="phoneNumbers">Phone numbers</FormLabel>
-          <Textarea {...input} id="phoneNumbers" placeholder="Phone numbers" />
+          <Textarea
+            {...input}
+            id="phoneNumbers"
+            placeholder="Phone numbers"
+            data-testid="numbers"
+          />
           {meta.touched && meta.error && (
             <FormErrorMessage>{meta.error}</FormErrorMessage>
           )}
@@ -87,8 +97,8 @@ const BottomSection: React.FC<IBottomSection> = ({
       >
         Send
       </Button>
-
       <Button
+        data-testid="bottom-reset"
         type="reset"
         onClick={() => {
           setShowBottom(false);
