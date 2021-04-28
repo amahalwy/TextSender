@@ -12,6 +12,7 @@ const Submit: React.FC<ISubmitSection> = ({
 }) => (
   <Flex mt="6%" justifyContent="center">
     <Button
+      data-testid="find-button"
       type="button"
       disabled={submitting || pristine || invalid || loadingNumbers}
       isLoading={loadingNumbers}

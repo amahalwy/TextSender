@@ -15,7 +15,12 @@ const Secret = () => (
     render={({ input, meta }) => (
       <FormControl mt="10px" isInvalid={meta.touched && meta.error}>
         <FormLabel htmlFor="api-secret">API Key Secret</FormLabel>
-        <Input {...input} id="api-secret" placeholder="API Key Secret" />
+        <Input
+          {...input}
+          id="api-secret"
+          placeholder="API Key Secret"
+          data-testid="secret-input"
+        />
         {meta.touched && meta.error && (
           <FormErrorMessage>{meta.error}</FormErrorMessage>
         )}

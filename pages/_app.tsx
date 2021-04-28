@@ -1,7 +1,6 @@
 import React from "react";
 import { ChakraProvider } from "@chakra-ui/react";
 import { AppProps } from "next/app";
-import dynamic from "next/dynamic";
 
 const SafeHydrate = ({ children }: any) => {
   return (

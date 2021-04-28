@@ -15,7 +15,12 @@ const API = () => (
     render={({ input, meta }) => (
       <FormControl mt="10px" isInvalid={meta.touched && meta.error}>
         <FormLabel htmlFor="api-key">API Key</FormLabel>
-        <Input {...input} id="api-key" placeholder="API Key" />
+        <Input
+          {...input}
+          id="api-key"
+          placeholder="API Key"
+          data-testid="api-input"
+        />
         {meta.touched && meta.error && (
           <FormErrorMessage>{meta.error}</FormErrorMessage>
         )}
