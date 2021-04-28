@@ -6,4 +6,5 @@
 export default {
   clearMocks: true,
   coverageDirectory: "coverage",
+  setupFiles: ["<rootDir>/jest/testModule.ts"],
 };
