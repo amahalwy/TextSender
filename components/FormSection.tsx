@@ -15,11 +15,12 @@ import BottomSection from "./BottomSection";
 import publishMessage from "../pages/api/slack/SendSlackMsg";
 import SubmitSection from "./Form/Submit";
 
-const fetchNumbers = async (values: IValues) => {
-  return await fetch(endpoints.FindTwilioEndpoint, {
+export const fetchNumbers = async (values: IValues) => {
+  const req = await fetch(endpoints.FindTwilioEndpoint, {
     method: "POST",
     body: JSON.stringify(values),
-  }).then((res) => res.json());
+  });
+  return req.json();
 };
 
 const FormSection: React.FC<IFormSection> = ({
@@ -77,7 +78,7 @@ const FormSection: React.FC<IFormSection> = ({
         invalid,
       }) => (
         <form
-          data-testid="index-form"
+          data-testid="test-form"
           onSubmit={handleSubmit}
           style={{ margin: "0 auto", padding: "10px 0" }}
         >
