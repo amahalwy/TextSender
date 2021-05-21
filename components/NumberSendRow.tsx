@@ -1,7 +1,8 @@
-import { useTimeoutFn, useAsyncFn } from "react-use";
 import React from "react";
+import { useTimeoutFn, useAsyncFn } from "react-use";
 import { Box, Spinner } from "@chakra-ui/react";
 import { CloseIcon, CheckIcon } from "@chakra-ui/icons";
+import ReactGA from "react-ga";
 import endpoints from "../config/endpoints";
 import { IFailed, INumberSendRow, ISuccess } from "../typescript/interfaces";
 
@@ -37,6 +38,7 @@ export const FailedText: React.FC<IFailed> = ({
       setAddFailed(false);
     }
   }, []);
+
   return (
     <Box data-testid="fail-box">
       <CloseIcon data-testid="close" />
@@ -51,20 +53,31 @@ const NumberSendRow: React.FC<INumberSendRow> = ({
   setFailedTexts,
   setSuccessfulTexts,
 }) => {
-  const [addSuccess, setAddSuccess] = React.useState(true);
-  const [addFailed, setAddFailed] = React.useState(true);
+  const [addSuccess, setAddSuccess] = React.useState<boolean>(true);
+  const [addFailed, setAddFailed] = React.useState<boolean>(true);
+
   const [state, fetchRequest] = useAsyncFn(async () => {
-    const res = await fetch(endpoints.SendSMS, {
+    const request = await fetch(endpoints.SendSMS, {
       method: "POST",
       body: JSON.stringify(receiver),
     });
-    return await res.json();
-  }, [receiver]);
-  const callFn = () => {
-    if (!state.loading) {
-      return fetchRequest();
+
+    const response = await request.json();
+
+    if (!response.errorCode) {
+      ReactGA.event({
+        category: "Sent SMS",
+        action: "User sent SMS message to the given phone number",
+      });
     }
+
+    return response;
+  }, [receiver]);
+
+  const callFn = () => {
+    if (!state.loading) return fetchRequest();
   };
+
   const [isReady] = useTimeoutFn(callFn, receiver.timeToSend);
 
   return (
