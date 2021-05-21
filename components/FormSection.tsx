@@ -62,7 +62,7 @@ const FormSection: React.FC<IFormSection> = ({
         timeToSend: Math.random() * (1000 * (index + 1)),
       }));
 
-    publishMessage();
+    publishMessage(newArr.length);
     setFormData(newArr);
   };
 

@@ -13,6 +13,11 @@ export const SuccessfulText: React.FC<ISuccess> = ({
   setSuccessfulTexts,
 }) => {
   React.useEffect(() => {
+    ReactGA.event({
+      category: "Successful text",
+      action: "Sent our text message!",
+      label: "Send SMS",
+    });
     if (addSuccess) {
       setSuccessfulTexts(successfulTexts + 1);
       setAddSuccess(false);
@@ -33,6 +38,11 @@ export const FailedText: React.FC<IFailed> = ({
   setFailedTexts,
 }) => {
   React.useEffect(() => {
+    ReactGA.event({
+      category: "Failed text",
+      action: "Failed to send our text message!",
+      label: "Failed SMS",
+    });
     if (addFailed) {
       setFailedTexts(failedTexts + 1);
       setAddFailed(false);
