@@ -1,13 +1,10 @@
 import React from "react";
 import Head from "next/head";
-import { Form } from "react-final-form";
-import { Heading, Box, VStack, Text } from "@chakra-ui/react";
+import { Box, VStack, Text } from "@chakra-ui/react";
 import NumberSendRow from "../components/NumberSendRow";
-import BottomSection from "../components/BottomSection";
 import FormSection from "../components/FormSection";
 import GoogleAnalytics from "../components/GoogleAnalytics";
-import publishMessage from "./api/slack/SendSlackMsg";
-import { IValues, IReceiver } from "../typescript/interfaces";
+import { IReceiver } from "../typescript/interfaces";
 
 const MyForm: React.FC = () => {
   const [numbers, setNumbers] = React.useState<string[]>([]);
@@ -19,28 +16,6 @@ const MyForm: React.FC = () => {
   );
   const [failedTexts, setFailedTexts] = React.useState<number>(0);
   const [successfulTexts, setSuccessfulTexts] = React.useState<number>(0);
-
-  const onSubmit = (values: IValues) => {
-    const { accountSid, apiKey, apiSecret, message, from } = values;
-    const data = {
-      accountSid,
-      apiKey,
-      apiSecret,
-      message,
-      from,
-    };
-
-    const newArr: IReceiver[] = values.numbers
-      .split(",")
-      .map((number: string, index: number) => ({
-        ...data,
-        to: number.trim(),
-        timeToSend: Math.random() * (1000 * (index + 1)),
-      }));
-
-    publishMessage();
-    setFormData(newArr);
-  };
 
   return (
     <Box

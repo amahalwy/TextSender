@@ -1,21 +1,11 @@
 import React from "react";
-import { ChakraProvider } from "@chakra-ui/react";
 import { AppProps } from "next/app";
-
-const SafeHydrate = ({ children }: any) => {
-  return (
-    <div suppressHydrationWarning>
-      {typeof window === "undefined" ? null : children}
-    </div>
-  );
-};
+import { ChakraProvider } from "@chakra-ui/react";
 
 const MyApp = ({ Component, pageProps }: AppProps) => (
-  <SafeHydrate>
-    <ChakraProvider>
-      <Component {...pageProps} />
-    </ChakraProvider>
-  </SafeHydrate>
+  <ChakraProvider>
+    <Component {...pageProps} />
+  </ChakraProvider>
 );
 
 export default MyApp;

@@ -1,6 +1,6 @@
 //@ts-nocheck
-import GoogleAnalytics from "../../components/GoogleAnalytics";
 import React from "react";
+import GoogleAnalytics from "../../components/GoogleAnalytics";
 import { render } from "@testing-library/react";
 
 describe("Google Analytics Component", () => {
