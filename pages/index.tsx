@@ -11,9 +11,8 @@ const MyForm: React.FC = () => {
   const [formData, setFormData] = React.useState<IReceiver[]>([]);
   const [showBottom, setShowBottom] = React.useState<boolean>(false);
   const [loadingNumbers, setLoadingNumbers] = React.useState<boolean>(false);
-  const [showTwilioSection, setShowTwilioSection] = React.useState<boolean>(
-    true
-  );
+  const [showTwilioSection, setShowTwilioSection] =
+    React.useState<boolean>(true);
   const [failedTexts, setFailedTexts] = React.useState<number>(0);
   const [successfulTexts, setSuccessfulTexts] = React.useState<number>(0);
 
@@ -31,7 +30,7 @@ const MyForm: React.FC = () => {
           content="A simple and easy application to send SMS through Twilio API."
         />
       </Head>
-      <GoogleAnalytics />
+      {/* <GoogleAnalytics /> */}
       <Box
         p={5}
         bg="white"
